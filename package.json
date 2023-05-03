@@ -8,7 +8,8 @@
     "lint": "eslint src --ext .ts --fix",
     "knex": "node --no-warnings --loader tsx ./node_modules/.bin/knex",
     "migrate:create": "npm run knex -- migrate:make --migrations-directory ./src/db/migrations -x ts",
-    "test": "vitest"
+    "test": "vitest",
+    "build":"tsup src"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +20,7 @@
     "@types/supertest": "^2.0.12",
     "eslint": "^8.39.0",
     "supertest": "^6.3.3",
+    "tsup": "^6.7.0",
     "tsx": "^3.12.7",
     "typescript": "^5.0.4",
     "vitest": "^0.30.1"
