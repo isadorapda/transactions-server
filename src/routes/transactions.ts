@@ -5,27 +5,6 @@ import crypto from 'node:crypto'
 import { checkSessionIdExists } from '../middlewares/check-session-id-exists'
 
 export async function transactionsRoutes(app: FastifyInstance) {
-  // app.get('/hello', async () => {
-  //   const transaction = await knex('transactions')
-  //     // inserting data in the table
-  //     .insert({
-  //       id: crypto.randomUUID(),
-  //       title: 'Test transaction',
-  //       amount: 500,
-  //     })
-  //     .returning('*') // without this method, it will only return a number, so we use returning('*') to get all contents of the db
-  //   return transaction
-  // })
-  //   app.get('/hello', async () => {
-  //     const transaction = await knex('transactions')
-  //       .where('amount', 500) // specifying which data to select
-  //       .select('*')
-  //     return transaction
-  //   })
-  // app.addHook('preHandler', async (req, res) => {
-  //   console.log(`[${req.method}], ${req.url}`)
-  // })
-
   app.get(
     '/',
     {
@@ -49,15 +28,14 @@ export async function transactionsRoutes(app: FastifyInstance) {
     },
     async (request) => {
       const getTransactionParamSchema = z.object({
-        // schema declaration
         id: z.string().uuid(),
       })
-      const { id } = getTransactionParamSchema.parse(request.params) // data validation
+      const { id } = getTransactionParamSchema.parse(request.params)
       const { sessionId } = request.cookies
-      const transactions = await knex('transactions')
+      const transaction = await knex('transactions')
         .where({ id, session_id: sessionId })
-        .first() // query with query builder knex
-      return { transactions } // returning as an object allows for future increment the data
+        .first()
+      return { transaction }
     },
   )
 
@@ -71,8 +49,8 @@ export async function transactionsRoutes(app: FastifyInstance) {
 
       const summaryTransactions = await knex('transactions')
         .where('session_id', sessionId)
-        .sum('amount', { as: 'amount' }) // adding {as: ''} to determine the property name, otherwise it will be 'sum('amount')'
-        .first() // without the .first() method, knex will return an array. When we add first() we are saying that we want the first appearance, so it return an obj
+        .sum('amount', { as: 'amount' })
+        .first()
       return { summaryTransactions }
     },
   )
@@ -85,7 +63,7 @@ export async function transactionsRoutes(app: FastifyInstance) {
     })
     const { title, amount, type } = createTransactionBodySchema.parse(
       request.body,
-    ) // validating the data from the request body according to what we specified in the schema
+    )
 
     let sessionId = request.cookies.sessionId
 

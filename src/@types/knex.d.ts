@@ -1,8 +1,6 @@
 // eslint-disable-next-line
 import { Knex } from 'knex'
 
-// we're overwriting types
-
 declare module 'knex/types/tables' {
   export interface Tables {
     transactions: {
